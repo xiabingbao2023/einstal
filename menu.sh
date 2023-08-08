@@ -10,18 +10,52 @@ show_menu() {
     echo "3. 退出"
 }
 
-# 安装JDK函数
+# 关闭SElinux函数
 SElinux_disable() {
-    echo "正在安装JDK..."
-    # 在这里添加安装JDK的实际命令
-    echo "JDK安装完成！"
+
+current_status=$(getenforce)
+
+if [ "$current_status" == "Enforcing" ]; then
+    echo "当前 SELinux 状态为 Enforcing，将关闭 SELinux。"
+    # 临时关闭 SELinux
+    setenforce 0
+    # 修改配置文件以永久关闭 SELinux（需要重启系统才会生效）
+    sed -i 's/^SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
+    echo "SELinux 已关闭。"
+elif [ "$current_status" == "Permissive" ]; then
+    echo "当前 SELinux 状态为 Permissive，将永久关闭 SELinux。"
+    # 修改配置文件以永久关闭 SELinux（需要重启系统才会生效）
+    sed -i 's/^SELINUX=permissive/SELINUX=disabled/' /etc/selinux/config
+    echo "SELinux 已关闭。"
+else
+    echo "当前 SELinux 状态为 Disabled，无需操作。"
+fi
+
 }
 
+# 关闭firewalld函数
+firewalld_disable(){
+# 检查当前 firewalld 状态
+current_status=$(systemctl is-active firewalld)
+
+if [ "$current_status" == "active" ]; then
+    echo "当前 firewalld 状态为 active，将关闭 firewalld。"
+    # 停止 firewalld 服务
+    systemctl stop firewalld
+    # 禁用 firewalld 服务，以防止开机启动
+    systemctl disable firewalld
+    echo "firewalld 已关闭。"
+else
+    echo "当前 firewalld 状态为 inactive，无需操作。"
+fi
+
+}
 
 # 安装JDK函数
 install_jdk() {
     echo "正在安装JDK..."
     # 在这里添加安装JDK的实际命令
+    source ./shell/jdk_install.sh
     echo "JDK安装完成！"
 }
 
@@ -39,7 +73,8 @@ while true; do
 
     case $choice in
         1)
-            install_jdk
+            SElinux_disable
+            firewalld_disable
             ;;
         2)
             install_nginx
