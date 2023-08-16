@@ -5,9 +5,9 @@ show_menu() {
     clear
     echo "=== 菜单 ==="
     echo "1. 关闭SELinux和firewalld"
-    echo "1. 安装JDK"
-    echo "2. 安装Nginx"
-    echo "3. 退出"
+    echo "2. 安装JDK1.8"
+    echo "3. 通过yum源安装Nginx"
+    echo "4. 退出"
 }
 
 # 关闭SElinux函数
@@ -60,9 +60,9 @@ install_jdk() {
 }
 
 # 安装Nginx函数
-install_nginx() {
+install_nginxByYum() {
     echo "正在安装Nginx..."
-    # 在这里添加安装Nginx的实际命令
+    source ./shell/nginx_installByYum.sh
     echo "Nginx安装完成！"
 }
 
@@ -77,7 +77,10 @@ while true; do
             firewalld_disable
             ;;
         2)
-            install_nginx
+            install_jdk
+            ;;
+        3)
+            install_nginxByYum
             ;;
         3)
             echo "退出脚本。"
