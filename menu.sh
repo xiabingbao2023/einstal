@@ -7,7 +7,7 @@ show_menu() {
     echo "1. 关闭SELinux和firewalld"
     echo "2. 安装JDK1.8"
     echo "3. 通过yum源安装Nginx"
-    echo "4. 退出"
+    echo "0. 退出"
 }
 
 # 关闭SElinux函数
@@ -82,7 +82,7 @@ while true; do
         3)
             install_nginxByYum
             ;;
-        3)
+        0)
             echo "退出脚本。"
             break
             ;;
