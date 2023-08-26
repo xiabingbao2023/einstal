@@ -25,9 +25,10 @@ else
     echo "下载 JDK 1.8..."
     wget -q $jdk_url -O jdk1.8.tar.gz
     tar -xzf jdk1.8.tar.gz -C /opt/
+    ln -s /opt/jdk8u* /opt/jdk1.8
 fi
 
-# 检查解压是否成功
+# 检查jdk安装是否成功
 if [ $? -eq 0 ]; then
     rm jdk1.8.tar.gz  # 解压成功后删除安装包
 
