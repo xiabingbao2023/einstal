@@ -24,6 +24,7 @@ else
     jdk_url="https://mirrors.tuna.tsinghua.edu.cn/Adoptium/8/jdk/x64/linux/OpenJDK8U-jdk_x64_linux_hotspot_8u382b05.tar.gz"
     echo "下载 JDK 1.8..."
     wget -q $jdk_url -O jdk1.8.tar.gz
+    tar -xzf jdk1.8.tar.gz -C /opt/
 fi
 
 # 检查解压是否成功
