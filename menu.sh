@@ -3,10 +3,11 @@
 # 菜单函数
 show_menu() {
     clear
-    echo "=== 菜单 ==="
+    echo "=== 在Linux上一键安装各种软件 V0.01 ==="
     echo "1. 关闭SELinux和firewalld"
     echo "2. 安装JDK1.8"
     echo "3. 通过yum源安装Nginx"
+    echo "4. 通过yum源安装mysql5.7"
     echo "0. 退出"
 }
 
@@ -65,6 +66,12 @@ install_nginxByYum() {
     source ./shell/nginx_installByYum.sh
     echo "Nginx安装完成！"
 }
+# 通过yum安装mysql5.7
+install_mysql5.7ByYum（）{
+    echo "正在通过yum安装MySQL5.7..."
+    source ./shell/install_yum_mysql57.sh
+    echo "MySQL5.7安装完成！"
+}
 
 # 主循环
 while true; do
@@ -81,6 +88,9 @@ while true; do
             ;;
         3)
             install_nginxByYum
+            ;;
+         3)
+            install_mysql5.7ByYum
             ;;
         0)
             echo "退出脚本。"
