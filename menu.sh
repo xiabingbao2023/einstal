@@ -8,6 +8,7 @@ show_menu() {
     echo "2. 安装JDK1.8"
     echo "3. 通过yum源安装Nginx"
     echo "4. 通过yum源安装mysql5.7"
+    echo "4. 通过yum源安装PG12"
     echo "0. 退出"
 }
 
