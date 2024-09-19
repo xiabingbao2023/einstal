@@ -22,7 +22,7 @@ if [ $? -ne 0 ]; then
 fi
 #下载zlib源代码,并提示下载zlib源代码
 echo "正在下载zlib源代码"
-wget https://www.zlib.net/fossils/zlib-1.2.7.3.tar.gz
+wget --no-check-certificate https://www.zlib.net/fossils/zlib-1.2.7.3.tar.gz
 if [ $? -ne 0 ]; then
     echo "下载zlib源代码失败，请检查网络环境"
     exit 1
@@ -96,7 +96,7 @@ ln -s -T /opt/postgresql-12.20/ /opt/postgresql
 echo "正在创建postgresql软链接"
 #创建postgres用户
 echo "正在创建postgres用户"
-useradd -M postgres
+useradd postgres
 echo “!QAZ-pl,”| passwd --stdin postgres
 #创建pg数据库目录
 echo "正在创建pg数据库目录"
@@ -104,8 +104,8 @@ mkdir -p /opt/postgresql-12.20/pg12.20server/pgdata
 #更改数据库权限
 chown -R postgres:postgres /opt/postgresql-12.20
 echo "正在初始化pg数据库"
-su postgres
-/opt/postgresql-12.20/pg12.20server/bin/initdb -D /opt/postgresql-12.20/pg12.20server/pgdata
+su -c "/opt/postgresql-12.20/pg12.20server/bin/initdb -D /opt/postgresql-12.20/pg12.20server/pgdata" postgres
+echo "正在配置pg数据库"
 #配置启动服务器
 cp /root/pgsource/postgresql-12.20/contrib/start-scripts/linux /etc/init.d/
 chmod +x /etc/init.d/linux
@@ -113,13 +113,26 @@ mv /etc/init.d/linux /etc/init.d/postgresql
 sed -i 's#prefix=/usr/local/pgsql#prefix=/opt/postgresql/pg12.20server/#g' /etc/init.d/postgresql
 sed -i 's#PGDATA="/usr/local/pgsql/data"#PGDATA=/opt/postgresql/pg12.20server/pgdata/#g' /etc/init.d/postgresql
 chkconfig --add postgresql
+#允许postgresql远程登录
+echo "正在配置远程登录"
+sed -i 's#host    all             all             127.0.0.1/32            ident#host    all             all             0.0.0.0/0            md5#g' /opt/postgresql/pg12.20server/pgdata/pg_hba.conf
+echo "host    all             all             0.0.0.0/0            md5" >> /opt/postgresql/pg12.20server/pgdata/pg_hba.conf
+echo "listen_addresses = '*'" >> /opt/postgresql/pg12.20server/pgdata/postgresql.conf
+#配置postgresql的bin目录到path环境变量
+echo "export PATH=\$PATH:/opt/postgresql/pg12.20server/bin" >> /etc/profile
+source /etc/profile
 #启动数据库
 systemctl daemon-reload
 systemctl start postgresql
+echo "正在启动数据库"
+sleep 3
 systemctl status postgresql
 # 检测服务是否启动成功
 if systemctl is-active --quiet postgresql; then
     echo "安装成功！postgresql服务已成功启动。"
+    echo "默认允许所有地址访问"
+    echo "postgres的用户名为postgresql"
+    echo "ALTER USER postgres WITH PASSWORD 'postgresql';" | /opt/postgresql/pg12.20server/bin/psql -U postgres -h localhost
 else
     echo "安装失败，请手动排查。"
 fi
