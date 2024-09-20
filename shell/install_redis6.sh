@@ -8,7 +8,7 @@ fi
 
 if ! command -v gcc &> /dev/null; then
     echo "正在安装 gcc..."
-    yum install -y gcc
+    yum install -y gcc make
 fi
 
 # 下载Redis源码
@@ -18,18 +18,13 @@ wget https://download.redis.io/releases/redis-6.2.14.tar.gz
 # 解压
 echo "正在解压..."
 tar -zxvf redis-6.2.14.tar.gz
-
-# 进入目录
 cd redis-6.2.14
-
 # 编译
 echo "正在编译..."
-make MALLOC=libc
-
-# 安装
+make
 echo "正在安装..."
-make install
-
+make PREFIX=/opt/redis6.2.14 install
+ln -s -T /opt/redis6.2.14/ /opt/redis
 # 创建配置文件存放目录
 echo "正在创建配置文件目录..."
 mkdir -p /etc/redis
@@ -41,27 +36,15 @@ cp redis.conf /etc/redis/6379.conf
 # 修改配置文件让Redis变为后台启动
 echo "正在修改配置文件..."
 sudo sed -i 's/^daemonize no$/daemonize yes/' /etc/redis/6379.conf
-
+#开启持久化
+mkdir -p 
 # 复制启动脚本
 echo "正在复制启动脚本..."
 cp utils/redis_init_script /etc/init.d/redis
-
+sudo sed -i 's/usr/opt/g' /etc/init.d/redis
+sudo sed -i 's/local/redis/g' /etc/init.d/redis
 # 制作成服务
-echo "
-[Unit]
-Description=Redis 服务器
-After=network.target
-After=syslog.target
-[Service]
-Type=forking
-PermissionsStartOnly=true
-ExecStart= /etc/init.d/redis start
-ExecStop= /etc/init.d/redis stop
-ExecReload= /etc/init.d/redis restart
-[Install]
-WantedBy=multi-user.target
-" | sudo tee -a /usr/lib/systemd/system/redis.service
-
+chkconfig --add redis
 # 启动服务
 echo "正在启动Redis服务..."
 systemctl start redis
