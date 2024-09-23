@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # 检查是否安装wget和gcc，如果不存在则安装
 if ! command -v wget &> /dev/null; then
     echo "正在安装 wget..."
@@ -37,7 +36,14 @@ cp redis.conf /etc/redis/6379.conf
 echo "正在修改配置文件..."
 sudo sed -i 's/^daemonize no$/daemonize yes/' /etc/redis/6379.conf
 #开启持久化
-mkdir -p 
+mkdir -p /opt/redis6.2.14/{rdb,aof}
+sed -i 's/^save 900 1$/save 900 1\nsave 300 10\nsave 60 10000/' /etc/redis/6379.conf
+sed -i '/dir \/var\/lib\/redis/a dir /opt/redis6.2.14/rdb' /etc/redis/6379.conf
+#开启aof持久化
+sed -i 's/^appendonly no$/appendonly yes/' /etc/redis/6379.conf
+#配置持久化目录
+
+sed -i '/appendfilename "appendonly.aof"/a dir /opt/redis6.2.14/aof' /etc/redis/6379.conf
 # 复制启动脚本
 echo "正在复制启动脚本..."
 cp utils/redis_init_script /etc/init.d/redis
@@ -59,3 +65,4 @@ fi
 # 开机自动启动
 echo "正在设置开机自动启动..."
 systemctl enable redis
+
