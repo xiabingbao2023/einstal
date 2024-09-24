@@ -37,13 +37,20 @@ echo "正在修改配置文件..."
 sudo sed -i 's/^daemonize no$/daemonize yes/' /etc/redis/6379.conf
 #开启持久化
 mkdir -p /opt/redis6.2.14/{rdb,aof}
-sed -i 's/^save 900 1$/save 900 1\nsave 300 10\nsave 60 10000/' /etc/redis/6379.conf
-sed -i '/dir \/var\/lib\/redis/a dir /opt/redis6.2.14/rdb' /etc/redis/6379.conf
-#开启aof持久化
+sed -i 's/^# save 3600 1$/save 3600 1/' /etc/redis/6379.conf
+sed -i 's/^# save 300 100$/save 300 100/' /etc/redis/6379.conf
+sed -i 's/^# save 60 10000$/save 60 10000/' /etc/redis/6379.conf
 sed -i 's/^appendonly no$/appendonly yes/' /etc/redis/6379.conf
-#配置持久化目录
-
+sed -i '/dir ./a dir /opt/redis6.2.14/rdb' /etc/redis/6379.conf
+sed -i '456,457d' /etc/redis/6379.conf
 sed -i '/appendfilename "appendonly.aof"/a dir /opt/redis6.2.14/aof' /etc/redis/6379.conf
+sed -i 's/^appendonly no$/appendonly yes/' /etc/redis/6379.conf
+sed -i '/dir .//a dir /opt/redis6.2.14/rdb' /etc/redis/6379.conf
+#配置密码
+sed -i 's/^# requirepass foobared$/requirepass redis/' /etc/redis/6379.conf
+#配置redis到环境变量
+echo "export PATH=\$PATH:/opt/redis/bin" >> /etc/profile
+source /etc/profile
 # 复制启动脚本
 echo "正在复制启动脚本..."
 cp utils/redis_init_script /etc/init.d/redis
