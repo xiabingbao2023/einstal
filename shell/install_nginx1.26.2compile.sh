@@ -56,4 +56,7 @@ cd nginx-1.26.2
 ./configure --prefix=/opt/nginx-1.26.2 --with-openssl=../openssl-1.1.1q --with-pcre=../pcre-8.43 --with-zlib=../zlib-1.2.7.3
 make -s -j$(nproc)
 make install
+ln -s -T /opt/nginx-1.26.2 /opt/nginx
+ln -s /opt/nginx/sbin/nginx /usr/sbin/
+chkconfig --add nginx
 
