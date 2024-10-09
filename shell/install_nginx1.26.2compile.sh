@@ -58,5 +58,10 @@ make -s -j$(nproc)
 make install
 ln -s -T /opt/nginx-1.26.2 /opt/nginx
 ln -s /opt/nginx/sbin/nginx /usr/sbin/
+wget -p /etc/systemd/system/ https://github.com/xiabingbao2023/einstal/blob/main/service/nginx.service
+chmod +x /etc/systemd/system/nginx.service
+systemctl daemon-reload
+systemctl start nginx
+systemctl enable nginx
 chkconfig --add nginx
 
