@@ -53,15 +53,15 @@ make -s -j$(nproc)
 echo "正在编译nginx"
 cd -
 cd nginx-1.26.2
-./configure --prefix=/opt/nginx-1.26.2 --with-openssl=../openssl-1.1.1q --with-pcre=../pcre-8.43 --with-zlib=../zlib-1.2.7.3
+./configure --prefix=/opt/nginx-1.26.2 --with-openssl=../openssl-1.1.1q --with-pcre=../pcre-8.43 --with-zlib=../zlib-1.2.7.3  --with-http_v2_module --with-stream --with-stream_ssl_module --with-stream_ssl_preread_module --with-http_stub_status_module --with-http_ssl_module --with-http_gzip_static_module --with-http_gunzip_module --with-ipv6 --with-http_sub_module --with-http_flv_module \
+--with-http_addition_module --with-http_realip_module --with-http_mp4_module --with-http_auth_request_module --with-stream
 make -s -j$(nproc)
 make install
 ln -s -T /opt/nginx-1.26.2 /opt/nginx
 ln -s /opt/nginx/sbin/nginx /usr/sbin/
-wget -p /etc/systemd/system/ https://github.com/xiabingbao2023/einstal/blob/main/service/nginx.service
+wget -P /etc/systemd/system/ https://raw.githubusercontent.com/xiabingbao2023/einstal/refs/heads/main/service/nginx.service
 chmod +x /etc/systemd/system/nginx.service
 systemctl daemon-reload
 systemctl start nginx
 systemctl enable nginx
-chkconfig --add nginx
 
