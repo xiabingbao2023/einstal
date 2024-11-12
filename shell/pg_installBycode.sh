@@ -71,25 +71,25 @@ fi
 echo "正在编译安装readline"
 cd readline-6.2
 ./configure --prefix=/opt/postgresql-12.20/pg-dep
-make && make install
+make -s -j$(nproc) && make install
 cd -
 #开始编译安装zlib
 echo "正在编译安装zlib"
 cd zlib-1.2.7.3
 ./configure --prefix=/opt/postgresql-12.20/pg-dep
-make && make install
+make -s -j$(nproc) && make install
 cd -
 #开始编译安装ncurses
 echo "正在编译安装ncurses"
 cd ncurses-5.9
 ./configure --prefix=/opt/postgresql-12.20/pg-dep --without-cxx-binding
-make && make install
+make -s -j$(nproc) && make install
 cd -
 #开始编译安装pg数据库
 echo "正在编译安装pg数据库"
 cd postgresql-12.20 
 ./configure --prefix=/opt/postgresql-12.20/pg12.20server --with-libraries=/opt/postgresql-12.20/pg-dep/lib/ --with-includes=/opt/postgresql-12.20/pg-dep/include/
-make && make install
+make -s -j$(nproc) && make install
 cd -
 #创建postgresql软链接
 ln -s -T /opt/postgresql-12.20/ /opt/postgresql
