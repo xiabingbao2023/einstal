@@ -48,6 +48,16 @@ cd /root/sqlite-autoconf-3400000
 ./configure
 make -s -j$(nproc)
 make install
+#安装gdal（postgis依赖它）
+wget https://github.com/OSGeo/gdal/releases/download/v3.6.1/gdal-3.6.1.tar.gz  
+tar -zxvf gdal-3.6.1.tar.gz
+mkdir build  
+cd build  
+/root/cmake-3.13.4-Linux-x86_64/bin/cmake ..
+source /opt/rh/devtoolset-7/enable
+#不要使用多线程编译 会导致编译失败
+make
+make install
 #TODO暂时先不编译
 #安装protobuf（postgis依赖它）
 wget https://github.com/protocolbuffers/protobuf/releases/download/v3.11.4/protobuf-all-3.11.4.tar.gz
@@ -65,3 +75,4 @@ export PATH=/usr/local/protobuf/bin:$PATH
 export PKG_CONFIG_PATH=/usr/local/protobuf/lib/pkgconfig:$PKG_CONFIG_PATH  
 ./configure --prefix=/usr/local/protobuf-c 
 make -s -j$(nproc)
+
