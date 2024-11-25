@@ -128,6 +128,7 @@ echo "正在启动数据库"
 sleep 3
 systemctl status postgresql
 # 检测服务是否启动成功
+clear
 if systemctl is-active --quiet postgresql; then
     echo "安装成功！postgresql服务已成功启动。"
     echo "默认允许所有地址访问"
