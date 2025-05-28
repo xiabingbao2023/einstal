@@ -18,3 +18,15 @@ sudo chown mysql:mysql /data/mysql-data/
 sudo chmod 750 /data/mysql-data/
 #初始化数据库
 sudo /usr/local/mysql/bin/mysqld --initialize-insecure --user=mysql --datadir=/data/mysql-data/
+#创建服务
+
+#启动服务
+
+# 将MySQL Bin目录添加到PATH
+echo "正在配置环境变量..."
+sudo -u root echo "export PATH=\$PATH:/usr/local/mysql/bin/" >> /etc/profile
+source /etc/profile
+#允许远程登录
+mysql -uroot -pmysql12#$ -e "use mysql; update user set user.Host='%' where user.User='root'; flush privileges;"
+#修改密码
+mysql -uroot  -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'mysql12#$';"
