@@ -16,13 +16,18 @@ sudo mkdir -p /data/mysql-data
 #修改目录权限
 sudo chown mysql:mysql /data/mysql-data/
 sudo chmod 750 /data/mysql-data/
+#复制配置文件到etc目录下
+sudo cp my.cnf /etc/
 #初始化数据库
 sudo /usr/local/mysql/bin/mysqld --initialize-insecure --user=mysql --datadir=/data/mysql-data/
 #创建服务
-
+#复制服务到系统服务目录下
+sudo cp mysqld.service /lib/systemd/system/
 #启动服务
-
+sudo systemctl daemon-reload
+sudo systemctl start mysqld
 # 将MySQL Bin目录添加到PATH
+#配置环境变量还存在些问题
 echo "正在配置环境变量..."
 sudo -u root echo "export PATH=\$PATH:/usr/local/mysql/bin/" >> /etc/profile
 source /etc/profile
