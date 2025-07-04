@@ -10,7 +10,7 @@ sudo useradd -r -g mysql -s /bin/false mysql
 xz -d mysql-8.4.5-linux-glibc2.28-x86_64.tar.xz
 sudo tar -xvf mysql-8.4.5-linux-glibc2.28-x86_64.tar -C /usr/local/
 #创建软链接
-sudo ln -sf /usr/local/mysql-8.4.5-linux-glibc2.28-x86_64 /usr/local/mysql
+sudo ln -s /usr/local/mysql-8.4.5-linux-glibc2.28-x86_64 /usr/local/mysql
 #创建数据目录
 sudo mkdir -p /data/mysql-data
 #修改目录权限
@@ -26,12 +26,14 @@ sudo cp mysqld.service /lib/systemd/system/
 #启动服务
 sudo systemctl daemon-reload
 sudo systemctl start mysqld
+#查看服务状态
+sudo systemctl status mysqld
 # 将MySQL Bin目录添加到PATH
 #配置环境变量还存在些问题
 echo "正在配置环境变量..."
 sudo -u root echo "export PATH=\$PATH:/usr/local/mysql/bin/" >> /etc/profile
 source /etc/profile
-#允许远程登录
-mysql -uroot -pmysql12#$ -e "use mysql; update user set user.Host='%' where user.User='root'; flush privileges;"
 #修改密码
 mysql -uroot  -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'mysql12#$';"
+#允许远程登录
+mysql -uroot -pmysql12#$ -e "use mysql; update user set user.Host='%' where user.User='root'; flush privileges;"
